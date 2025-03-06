@@ -40,7 +40,7 @@
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/QuizQuest.git
+    git clone https://github.com/karimitanii/QuizQuest.git
     ```
 2. Import the Android project into Android Studio.
 3. Set up a MySQL database using the provided schema.
