@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TQuiz Quest - Admin Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70vh;
+        flex-direction: column; /* Ensures elements are stacked vertically */
+      }
+
+      .login-container {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 100%;
+      }
+
+      .login-container h1 {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      .btn {
+        width: 100%;
+        background: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: #45a049;
+      }
+
+      .response {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .logo {
+        width: 300px; /* Increase this value to make the image wider */
+        height: auto; /* Maintains the aspect ratio */
+        margin-bottom: 20px; /* Optional: Space below the image */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Use a relative path or a URL accessible by the browser -->
+    <img
+      src="http://localhost/Web-GT/triviagame/logo-in-app.png"
+      alt="Logo"
+      class="logo"
+    />
+
+    <div class="login-container">
+      <h1>Admin Login</h1>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+        />
+      </div>
+      <button class="btn" id="loginBtn">Login</button>
+      <div class="response" id="response"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginBtn")
+        .addEventListener("click", function () {
+          // Get input values
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          // Validation
+          if (!email || !password) {
+            document.getElementById("response").textContent =
+              "Please fill out all fields.";
+            document.getElementById("response").style.color = "red";
+            return;
+          }
+
+          // Send a POST request to login_admin.php
+          const xhr = new XMLHttpRequest();
+          xhr.open(
+            "POST",
+            "http://localhost/Web-GT/triviagame/login_admin.php",
+            true
+          );
+          xhr.setRequestHeader(
+            "Content-Type",
+            "application/x-www-form-urlencoded"
+          );
+
+          // Handle the response
+          xhr.onload = function () {
+            const responseDiv = document.getElementById("response");
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText);
+              if (response.success) {
+                responseDiv.textContent = "Login successful! Redirecting...";
+                responseDiv.style.color = "green";
+
+                // Redirect to adminquestions.php
+                setTimeout(() => {
+                  window.location.href = response.redirect;
+                }, 200);
+              } else {
+                responseDiv.textContent = "Login failed: " + response.message;
+                responseDiv.style.color = "red";
+              }
+            } else {
+              responseDiv.textContent = "An error occurred: " + xhr.status;
+              responseDiv.style.color = "red";
+            }
+          };
+
+          // Send the data
+          const params = `email=${encodeURIComponent(
+            email
+          )}&password=${encodeURIComponent(password)}`;
+          xhr.send(params);
+        });
+    </script>
+  </body>
+</html>
